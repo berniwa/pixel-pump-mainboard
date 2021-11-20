@@ -1,0 +1,43 @@
+Schematic:
+Critical:
+a) Add a TVS diode to the input
+  -> Will fail Surge/ESD testing
+  -> I would suggest something like: 
+    1) a SMAJ14CA (bidirectional, with the reverse polarity FET) or 
+    2) a SMAJ14A (unidirectional) after F1 and without the reverse polarity protection FET
+b) Pull the shield to ground
+  -> Will fail radiated emissions and ESD Testing (as C21 may blow - depends on the cap)
+  -> In practice a capactiviely coupled shield just makes problems
+j) Add an input filter  
+   -> Will fail powerline coupled emissions testing
+   -> Your DCDC converter will most likely not pass Class B emission levels, so you need a filter
+   -> A PI filter with 10uF, 10uH, 10uF should be brute force enough
+e) Protect and filter footpedal connector 
+   -> Will fail ESD and potentially radiated emissions testing
+   -> Add a protection TVS and a small ferrit bead + cap to filter +3.3V 
+   -> This may be part of your problem, as the 3.3V (with noise) will radiate over the footpedal wire
+f) Add series termination
+   -> Potentially fails radiated emissions testing
+   -> Add some small value (10 - 30Ohm) series resistor, to at least to clock, if you see issue like described
+   -> This will reduce reflections and limit higher frequency emissions
+
+
+Warning:
+d) Add filtering to the UserInterface and Expansion ports 
+    -> Depending on the cable lengths
+g) Use ESD protected FETs
+   -> The current FETs you use, have an unprotected gate, what makes them really sensitve for ESD
+   -> NX7002 may be an alternative
+i) Add protection to the motor port
+   -> I don't know the motor, but induktive kickback may cause problems, so addtional protection and filtering may be necessary
+   
+Question: 
+c) You don't need VBUs to easily detect if the device is plugged in?
+
+Layout (just quick, as its late):
+a) Add GND on all outer layers
+b) Add Via stitching around the board and inside 
+    -> The addtional ground will provide addtional shieling and parasitic capacitance against the supply
+c) Ignore the 90Ohm diff routing for USB - that isn't necessary for USB 1.1
+Generally the frequency you have on the layout are not critical, so you just need to make sure,
+that you contain all the interference on the board itself and not couple it to the outside (see schematic)
